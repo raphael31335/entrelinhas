@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cadastro Manual</title></head>
+<body>
+    <h2>Cadastro Manual de Livro</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+    <p><a href="{% url 'home' %}">Voltar</a></p>
+</body>
+</html>

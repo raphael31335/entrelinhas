@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Ambientes virtuais
+env/
+venv/
+
+# Django
+db.sqlite3
+*.pyc
+
+# VSCode
+.vscode/
+
+# Arquivos sensíveis
+*.env

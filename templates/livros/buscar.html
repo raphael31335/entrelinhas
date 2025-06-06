@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Buscar Livros{% endblock %}
+{% block content %}
+<h3>Buscar Livros</h3>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Digite o nome do livro" required>
+    <button type="submit">Buscar</button>
+</form>
+
+{% if livros %}
+    <ul>
+    {% for livro in livros %}
+        <li>
+            <img src="{{ livro.capa }}" alt="Capa" style="height: 100px;"><br>
+            <strong>{{ livro.titulo }}</strong><br>
+            <em>{{ livro.autores }}</em><br>
+            <form method="post" action="{% url 'salvar_livro' %}">
+                {% csrf_token %}
+                <input type="hidden" name="google_id" value="{{ livro.google_id }}">
+                <input type="hidden" name="titulo" value="{{ livro.titulo }}">
+                <input type="hidden" name="autores" value="{{ livro.autores }}">
+                <input type="hidden" name="capa" value="{{ livro.capa }}">
+                <button type="submit">Salvar</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

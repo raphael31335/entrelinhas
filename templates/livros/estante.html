@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Minha Estante</h2>
+<div class="estante-grid">
+  {% for livro in livros %}
+    <div class="livro-card">
+      <img src="{{ livro.capa }}" alt="{{ livro.titulo }}" onclick="mostrarDetalhes({{ livro.id }})">
+      <div id="detalhes-{{ livro.id }}" class="livro-detalhes oculto">
+        <h3>{{ livro.titulo }}</h3>
+        <p><strong>Autor(es):</strong> {{ livro.autores }}</p>
+        <p><strong>Status:</strong> {{ livro.status }}</p>
+        <p><strong>Nota:</strong> {{ livro.nota }} / 5</p>
+        <p><strong>Comentário:</strong> {{ livro.comentario }}</p>
+        <p><strong>Data de Leitura:</strong> {{ livro.data_leitura }}</p>
+        <a href="{% url 'editar_livro' livro.pk %}">Editar</a> |
+        <a href="{% url 'remover_livro' livro.pk %}" onclick="return confirm('Tem certeza que deseja remover este livro?')">Remover</a>
+        <br><button onclick="fecharDetalhes({{ livro.id }})">Fechar</button>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  function mostrarDetalhes(id) {
+    document.getElementById(`detalhes-${id}`).classList.add('mostrar');
+  }
+  function fecharDetalhes(id) {
+    document.getElementById(`detalhes-${id}`).classList.remove('mostrar');
+  }
+</script>
+{% endblock %}

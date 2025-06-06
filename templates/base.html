@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Entrelinhas{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h2>Entrelinhas</h2>
+        {% if user.is_authenticated %}
+        <nav>
+            <a href="{% url 'home' %}">Início</a> |
+            <a href="{% url 'buscar_livros' %}">Buscar Livros</a> |
+            <a href="{% url 'minha_estante' %}">Minha Estante</a> |
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">Sair</button>
+            </form>
+        </nav>
+        {% endif %}
+    </header>
+    <hr>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
