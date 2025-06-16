@@ -8,4 +8,5 @@ urlpatterns = [
     path('manual/', views.cadastro_manual, name='cadastro_manual'),
     path('remover/<int:pk>/', views.remover_livro, name='remover_livro'),
     path('editar/<int:pk>/', views.editar_livro, name='editar_livro'),
+    path('sugestoes/', views.sugestoes_para_mim, name='sugestoes_para_mim'),
 ]

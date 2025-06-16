@@ -12,6 +12,7 @@
             <a href="{% url 'home' %}">Início</a> |
             <a href="{% url 'buscar_livros' %}">Buscar Livros</a> |
             <a href="{% url 'minha_estante' %}">Minha Estante</a> |
+            <a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a> |
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">Sair</button>

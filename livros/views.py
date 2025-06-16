@@ -1,14 +1,15 @@
-# livros/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Livro
 from .forms import LivroForm
 from django.contrib.auth.decorators import login_required
 import requests
 
+
 @login_required
 def minha_estante(request):
     livros = Livro.objects.filter(user=request.user)
     return render(request, 'livros/estante.html', {'livros': livros})
+
 
 @login_required
 def buscar_livros(request):
@@ -29,6 +30,7 @@ def buscar_livros(request):
             ]
     return render(request, 'livros/buscar.html', {'livros': livros})
 
+
 @login_required
 def salvar_livro(request):
     if request.method == 'POST':
@@ -45,6 +47,7 @@ def salvar_livro(request):
         return redirect('minha_estante')
     return redirect('buscar_livros')
 
+
 @login_required
 def cadastro_manual(request):
     if request.method == 'POST':
@@ -58,11 +61,13 @@ def cadastro_manual(request):
         form = LivroForm()
     return render(request, 'livros/cadastro_manual.html', {'form': form})
 
+
 @login_required
 def remover_livro(request, pk):
     livro = get_object_or_404(Livro, pk=pk, user=request.user)
     livro.delete()
     return redirect('minha_estante')
+
 
 @login_required
 def editar_livro(request, pk):
@@ -75,3 +80,50 @@ def editar_livro(request, pk):
     else:
         form = LivroForm(instance=livro)
     return render(request, 'livros/editar.html', {'form': form})
+
+
+@login_required
+def sugestoes_para_mim(request):
+    meus_livros = Livro.objects.filter(user=request.user)
+    autores_favoritos = []
+    livros_bem_avaliados = []
+
+    for livro in meus_livros:
+        if livro.nota and livro.nota >= 4:
+            livros_bem_avaliados.append(livro)
+        if livro.autores:
+            autores_favoritos.extend([autor.strip() for autor in livro.autores.split(",")])
+
+    autores_favoritos = list(set(autores_favoritos))
+
+    query = ""
+    if autores_favoritos:
+        query += " ".join(autores_favoritos)
+    if livros_bem_avaliados:
+        query += " " + " ".join([livro.titulo for livro in livros_bem_avaliados])
+
+    sugestoes = []
+    if query:
+        response = requests.get(f'https://www.googleapis.com/books/v1/volumes?q={query}')
+        if response.status_code == 200:
+            data = response.json()
+            for item in data.get('items', []):
+                google_id = item.get('id')
+                titulo = item['volumeInfo'].get('title')
+                autores = ', '.join(item['volumeInfo'].get('authors', []))
+                capa = item['volumeInfo'].get('imageLinks', {}).get('thumbnail')
+
+                existe = Livro.objects.filter(
+                    user=request.user,
+                    google_id=google_id
+                ).exclude(status__in=['Lido', 'Lendo']).exists()
+
+                if not existe:
+                    sugestoes.append({
+                        'google_id': google_id,
+                        'titulo': titulo,
+                        'autores': autores,
+                        'capa': capa
+                    })
+
+    return render(request, 'livros/sugestoes.html', {'sugestoes': sugestoes})
