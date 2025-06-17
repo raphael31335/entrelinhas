@@ -1,28 +1,34 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Entrelinhas{% endblock %}</title>
 </head>
 <body>
     <header>
-        <h2>Entrelinhas</h2>
-        {% if user.is_authenticated %}
+        <h1><a href="{% url 'home' %}">Entrelinhas</a></h1>
         <nav>
-            <a href="{% url 'home' %}">Início</a> |
-            <a href="{% url 'buscar_livros' %}">Buscar Livros</a> |
-            <a href="{% url 'minha_estante' %}">Minha Estante</a> |
-            <a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a> |
-            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">Sair</button>
-            </form>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'minha_estante' %}">Minha Estante</a></li>
+                    <li><a href="{% url 'buscar_livros' %}">Buscar Livros</a></li>
+                    <li><a href="{% url 'cadastro_manual' %}">Cadastro Manual</a></li>
+                    <li><a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a></li>
+                    <li><a href="{% url 'logout' %}">Sair</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Cadastro</a></li>
+                {% endif %}
+            </ul>
         </nav>
-        {% endif %}
     </header>
-    <hr>
+
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 </body>
 </html>

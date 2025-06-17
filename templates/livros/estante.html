@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+
+{% block title %}Minha Estante - Entrelinhas{% endblock %}
+
 {% block content %}
 <h2>Minha Estante</h2>
+<a href="{% url 'sugestoes_para_mim' %}"><button>Sugestões para Mim</button></a>
+
 <div class="estante-grid">
   {% for livro in livros %}
     <div class="livro-card">
@@ -11,7 +16,7 @@
         <p><strong>Status:</strong> {{ livro.status }}</p>
         <p><strong>Nota:</strong> {{ livro.nota }} / 5</p>
         <p><strong>Comentário:</strong> {{ livro.comentario }}</p>
-        <p><strong>Data de Leitura:</strong> {{ livro.data_leitura }}</p>
+        <p><strong>Data de Leitura:</strong> {{ livro.data_leitura|default:"-" }}</p>
         <a href="{% url 'editar_livro' livro.pk %}">Editar</a> |
         <a href="{% url 'remover_livro' livro.pk %}" onclick="return confirm('Tem certeza que deseja remover este livro?')">Remover</a>
         <br><button onclick="fecharDetalhes({{ livro.id }})">Fechar</button>
