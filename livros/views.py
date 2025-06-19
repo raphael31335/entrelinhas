@@ -1,51 +1,48 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Livro
 from .forms import LivroForm
-from django.contrib.auth.decorators import login_required
-import requests
+from .utils import buscar_livros_api, gerar_sugestoes
 
 
 @login_required
 def minha_estante(request):
     livros = Livro.objects.filter(user=request.user)
-    return render(request, 'livros/estante.html', {'livros': livros})
+    return render(request, 'livros/minha_estante.html', {'livros': livros})
 
 
 @login_required
 def buscar_livros(request):
-    query = request.GET.get('q')
-    livros = []
-    if query:
-        response = requests.get(f'https://www.googleapis.com/books/v1/volumes?q={query}')
-        if response.status_code == 200:
-            data = response.json()
-            livros = [
-                {
-                    'google_id': item['id'],
-                    'titulo': item['volumeInfo'].get('title'),
-                    'autores': ', '.join(item['volumeInfo'].get('authors', [])),
-                    'capa': item['volumeInfo'].get('imageLinks', {}).get('thumbnail')
-                }
-                for item in data.get('items', [])
-            ]
-    return render(request, 'livros/buscar.html', {'livros': livros})
+    resultados = []
+    if 'q' in request.GET:
+        termo = request.GET.get('q')
+        resultados = buscar_livros_api(termo)
+    return render(request, 'livros/buscar.html', {'livros': resultados})
 
 
 @login_required
-def salvar_livro(request):
+def salvar_livro_api(request):
     if request.method == 'POST':
+        titulo = request.POST.get('titulo')
+        autores = request.POST.get('autores')
         google_id = request.POST.get('google_id')
-        if not Livro.objects.filter(user=request.user, google_id=google_id).exists():
+        capa = request.POST.get('capa')
+
+        if not Livro.objects.filter(user=request.user, titulo=titulo).exists():
             livro = Livro(
                 user=request.user,
+                titulo=titulo,
+                autores=autores,
                 google_id=google_id,
-                titulo=request.POST.get('titulo'),
-                autores=request.POST.get('autores'),
-                capa=request.POST.get('capa'),
+                capa=capa
             )
             livro.save()
+            messages.success(request, 'Livro salvo na sua estante!')
+        else:
+            messages.warning(request, 'Este livro já está na sua estante.')
+
         return redirect('minha_estante')
-    return redirect('buscar_livros')
 
 
 @login_required
@@ -56,6 +53,7 @@ def cadastro_manual(request):
             livro = form.save(commit=False)
             livro.user = request.user
             livro.save()
+            messages.success(request, 'Livro cadastrado manualmente!')
             return redirect('minha_estante')
     else:
         form = LivroForm()
@@ -63,19 +61,13 @@ def cadastro_manual(request):
 
 
 @login_required
-def remover_livro(request, pk):
-    livro = get_object_or_404(Livro, pk=pk, user=request.user)
-    livro.delete()
-    return redirect('minha_estante')
-
-
-@login_required
-def editar_livro(request, pk):
-    livro = get_object_or_404(Livro, pk=pk, user=request.user)
+def editar_livro(request, livro_id):
+    livro = get_object_or_404(Livro, id=livro_id, user=request.user)
     if request.method == 'POST':
         form = LivroForm(request.POST, instance=livro)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Livro atualizado com sucesso!')
             return redirect('minha_estante')
     else:
         form = LivroForm(instance=livro)
@@ -83,47 +75,14 @@ def editar_livro(request, pk):
 
 
 @login_required
+def remover_livro(request, livro_id):
+    livro = get_object_or_404(Livro, id=livro_id, user=request.user)
+    livro.delete()
+    messages.success(request, 'Livro removido da sua estante.')
+    return redirect('minha_estante')
+
+
+@login_required
 def sugestoes_para_mim(request):
-    meus_livros = Livro.objects.filter(user=request.user)
-    autores_favoritos = []
-    livros_bem_avaliados = []
-
-    for livro in meus_livros:
-        if livro.nota and livro.nota >= 4:
-            livros_bem_avaliados.append(livro)
-        if livro.autores:
-            autores_favoritos.extend([autor.strip() for autor in livro.autores.split(",")])
-
-    autores_favoritos = list(set(autores_favoritos))
-
-    query = ""
-    if autores_favoritos:
-        query += " ".join(autores_favoritos)
-    if livros_bem_avaliados:
-        query += " " + " ".join([livro.titulo for livro in livros_bem_avaliados])
-
-    sugestoes = []
-    if query:
-        response = requests.get(f'https://www.googleapis.com/books/v1/volumes?q={query}')
-        if response.status_code == 200:
-            data = response.json()
-            for item in data.get('items', []):
-                google_id = item.get('id')
-                titulo = item['volumeInfo'].get('title')
-                autores = ', '.join(item['volumeInfo'].get('authors', []))
-                capa = item['volumeInfo'].get('imageLinks', {}).get('thumbnail')
-
-                existe = Livro.objects.filter(
-                    user=request.user,
-                    google_id=google_id
-                ).exclude(status__in=['Lido', 'Lendo']).exists()
-
-                if not existe:
-                    sugestoes.append({
-                        'google_id': google_id,
-                        'titulo': titulo,
-                        'autores': autores,
-                        'capa': capa
-                    })
-
+    sugestoes = gerar_sugestoes(request.user)
     return render(request, 'livros/sugestoes.html', {'sugestoes': sugestoes})

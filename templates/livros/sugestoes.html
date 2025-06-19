@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+
+{% block title %}Sugestões para Você{% endblock %}
+
 {% block content %}
 <h2>Sugestões para Você</h2>
 
@@ -7,24 +10,24 @@
 </a>
 
 <div class="estante-grid">
-  {% if sugestoes %}
-    {% for livro in sugestoes %}
-      <div class="livro-card">
-        <img src="{{ livro.capa }}" alt="{{ livro.titulo }}">
-        <h3>{{ livro.titulo }}</h3>
-        <p><strong>Autor(es):</strong> {{ livro.autores }}</p>
-        <form action="{% url 'salvar_livro' %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="google_id" value="{{ livro.google_id }}">
-          <input type="hidden" name="titulo" value="{{ livro.titulo }}">
-          <input type="hidden" name="autores" value="{{ livro.autores }}">
-          <input type="hidden" name="capa" value="{{ livro.capa }}">
-          <button type="submit">Salvar na Estante</button>
-        </form>
-      </div>
-    {% endfor %}
-  {% else %}
-    <p>Nenhuma sugestão disponível no momento. Adicione mais livros para melhorar suas recomendações!</p>
-  {% endif %}
+    {% if sugestoes %}
+        {% for livro in sugestoes %}
+        <div class="livro-card">
+            <img src="{{ livro.capa }}" alt="{{ livro.titulo }}">
+            <h3>{{ livro.titulo }}</h3>
+            <p><strong>Autor(es):</strong> {{ livro.autores }}</p>
+            <form action="{% url 'salvar_livro_api' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="google_id" value="{{ livro.google_id }}">
+                <input type="hidden" name="titulo" value="{{ livro.titulo }}">
+                <input type="hidden" name="autores" value="{{ livro.autores }}">
+                <input type="hidden" name="capa" value="{{ livro.capa }}">
+                <button type="submit">Salvar na Estante</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhuma sugestão disponível no momento. Adicione mais livros para melhorar suas recomendações!</p>
+    {% endif %}
 </div>
 {% endblock %}

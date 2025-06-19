@@ -1,4 +1,3 @@
-# entrelinhas/settings.py
 import os
 from pathlib import Path
 
@@ -66,7 +65,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'minha_estante'
 LOGOUT_REDIRECT_URL = 'login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

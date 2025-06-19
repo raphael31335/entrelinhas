@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -17,7 +16,12 @@
                     <li><a href="{% url 'buscar_livros' %}">Buscar Livros</a></li>
                     <li><a href="{% url 'cadastro_manual' %}">Cadastro Manual</a></li>
                     <li><a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a></li>
-                    <li><a href="{% url 'logout' %}">Sair</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Sair</button>
+                        </form>
+                    </li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'register' %}">Cadastro</a></li>
@@ -27,8 +31,7 @@
     </header>
 
     <main>
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 </body>
 </html>
