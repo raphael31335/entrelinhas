@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
-
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h2>Bem-vindo ao Entrelinhas</h2>
-<p>Gerencie seus livros, descubra novas leituras e acompanhe seu progresso!</p>
+<div class="home-container">
+    <h2 class="titulo-pagina">Bem-vindo ao <span class="destaque">Entrelinhas</span></h2>
+    <p class="mensagem">Gerencie seus livros, descubra novas leituras e acompanhe seu progresso de forma única e personalizada.</p>
+
+    <div class="acoes-iniciais">
+        {% if user.is_authenticated %}
+            <a href="{% url 'minha_estante' %}" class="botao">Ir para Minha Estante</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="botao">Entrar</a>
+            <a href="{% url 'register' %}" class="botao-secundario">Criar Conta</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

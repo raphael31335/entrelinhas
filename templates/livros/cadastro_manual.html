@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head><title>Cadastro Manual</title></head>
-<body>
-    <h2>Cadastro Manual de Livro</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
-    <p><a href="{% url 'home' %}">Voltar</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Cadastro Manual{% endblock %}
+
+{% block content %}
+<h2 class="titulo-pagina">Cadastro Manual de Livro</h2>
+
+<form method="post" class="formulario">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="botao">Salvar</button>
+</form>
+
+<a href="{% url 'minha_estante' %}" class="botao-secundario">Voltar à Estante</a>
+{% endblock %}

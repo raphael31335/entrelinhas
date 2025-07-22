@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
-
 {% block title %}Buscar Livros{% endblock %}
 
 {% block content %}
-<h2>Buscar Livros</h2>
+<h2 class="titulo-pagina">Buscar Livros</h2>
 
-<form method="get">
+<form method="get" class="form-busca">
     <input type="text" name="q" placeholder="Digite o nome do livro" required>
-    <button type="submit">Buscar</button>
+    <button type="submit" class="botao">Buscar</button>
 </form>
 
 {% if livros %}
-    <ul>
-    {% for livro in livros %}
-        <li>
-            <img src="{{ livro.capa }}" alt="Capa" style="height: 100px;"><br>
-            <strong>{{ livro.titulo }}</strong><br>
-            <em>{{ livro.autores }}</em><br>
-            <form method="post" action="{% url 'salvar_livro_api' %}">
-                {% csrf_token %}
-                <input type="hidden" name="google_id" value="{{ livro.google_id }}">
-                <input type="hidden" name="titulo" value="{{ livro.titulo }}">
-                <input type="hidden" name="autores" value="{{ livro.autores }}">
-                <input type="hidden" name="capa" value="{{ livro.capa }}">
-                <button type="submit">Salvar</button>
-            </form>
+    <ul class="lista-livros">
+        {% for livro in livros %}
+        <li class="item-livro">
+            <img src="{{ livro.capa }}" alt="Capa de {{ livro.titulo }}">
+            <div>
+                <strong>{{ livro.titulo }}</strong><br>
+                <em>{{ livro.autores }}</em><br>
+                <form method="post" action="{% url 'salvar_livro_api' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="google_id" value="{{ livro.google_id }}">
+                    <input type="hidden" name="titulo" value="{{ livro.titulo }}">
+                    <input type="hidden" name="autores" value="{{ livro.autores }}">
+                    <input type="hidden" name="capa" value="{{ livro.capa }}">
+                    <button type="submit" class="botao">Salvar</button>
+                </form>
+            </div>
         </li>
-    {% endfor %}
+        {% endfor %}
     </ul>
 {% else %}
-    <p>Digite um nome de livro e clique em buscar.</p>
+    <p class="mensagem">Digite um nome de livro para buscar.</p>
 {% endif %}
 {% endblock %}

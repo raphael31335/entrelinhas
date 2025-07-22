@@ -3,17 +3,24 @@ __pycache__/
 *.py[cod]
 *.sqlite3
 *.log
+*.pot
+*.pyc
 
-# Ambientes virtuais
-env/
+# Virtual Environment
 venv/
+env/
 
 # Django
 db.sqlite3
-*.pyc
 
 # VSCode
 .vscode/
 
-# Arquivos sensíveis
-*.env
+# System
+.DS_Store
+Thumbs.db
+
+# Migrations
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/__pycache__/

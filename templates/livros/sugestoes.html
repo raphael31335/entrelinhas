@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
-
 {% block title %}Sugestões para Você{% endblock %}
 
 {% block content %}
-<h2>Sugestões para Você</h2>
+<h2 class="titulo-pagina">Sugestões para Você</h2>
 
-<a href="{% url 'minha_estante' %}">
-    <button>Voltar para Estante</button>
-</a>
+<a href="{% url 'minha_estante' %}" class="botao-secundario">Voltar à Estante</a>
 
 <div class="estante-grid">
     {% if sugestoes %}
@@ -22,12 +19,12 @@
                 <input type="hidden" name="titulo" value="{{ livro.titulo }}">
                 <input type="hidden" name="autores" value="{{ livro.autores }}">
                 <input type="hidden" name="capa" value="{{ livro.capa }}">
-                <button type="submit">Salvar na Estante</button>
+                <button type="submit" class="botao">Salvar na Estante</button>
             </form>
         </div>
         {% endfor %}
     {% else %}
-        <p>Nenhuma sugestão disponível no momento. Adicione mais livros para melhorar suas recomendações!</p>
+        <p class="mensagem">Adicione mais livros para melhorar suas recomendações.</p>
     {% endif %}
 </div>
 {% endblock %}

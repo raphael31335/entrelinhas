@@ -5,19 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Entrelinhas{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
-        <h1><a href="{% url 'home' %}">Entrelinhas</a></h1>
-        <nav>
+    <header class="header">
+        <h1 class="logo"><a href="{% url 'home' %}">Entrelinhas</a></h1>
+        <nav class="nav">
             <ul>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'minha_estante' %}">Minha Estante</a></li>
                     <li><a href="{% url 'buscar_livros' %}">Buscar Livros</a></li>
                     <li><a href="{% url 'cadastro_manual' %}">Cadastro Manual</a></li>
-                    <li><a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a></li>
+                    <li><a href="{% url 'sugestoes_para_mim' %}">Sugestões</a></li>
                     <li>
-                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        <form action="{% url 'logout' %}" method="post" class="logout-form">
                             {% csrf_token %}
                             <button type="submit">Sair</button>
                         </form>
@@ -30,7 +31,7 @@
         </nav>
     </header>
 
-    <main>
+    <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 </body>

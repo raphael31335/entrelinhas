@@ -1,0 +1,19 @@
+<nav>
+    <ul>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'minha_estante' %}">Minha Estante</a></li>
+            <li><a href="{% url 'buscar_livros' %}">Buscar Livros</a></li>
+            <li><a href="{% url 'cadastro_manual' %}">Cadastro Manual</a></li>
+            <li><a href="{% url 'sugestoes_para_mim' %}">Sugestões para Mim</a></li>
+            <li>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Sair</button>
+                </form>
+            </li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Cadastro</a></li>
+        {% endif %}
+    </ul>
+</nav>

@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-
-{% block title %}Minha Estante - Entrelinhas{% endblock %}
+{% block title %}Minha Estante{% endblock %}
 
 {% block content %}
-<h2>Minha Estante</h2>
-<a href="{% url 'sugestoes_para_mim' %}"><button>Sugestões para Mim</button></a>
+<h2 class="titulo-pagina">Minha Estante</h2>
+<a href="{% url 'sugestoes_para_mim' %}" class="botao-secundario">Sugestões para Mim</a>
 
 <div class="estante-grid">
     {% for livro in livros %}
@@ -17,9 +16,11 @@
             <p><strong>Nota:</strong> {{ livro.nota }} / 5</p>
             <p><strong>Comentário:</strong> {{ livro.comentario }}</p>
             <p><strong>Data de Leitura:</strong> {{ livro.data_leitura|default:"-" }}</p>
-            <a href="{% url 'editar_livro' livro.pk %}">Editar</a> |
-            <a href="{% url 'remover_livro' livro.pk %}" onclick="return confirm('Tem certeza que deseja remover este livro?')">Remover</a>
-            <br><button onclick="fecharDetalhes({{ livro.id }})">Fechar</button>
+            <div class="botoes-acoes">
+                <a href="{% url 'editar_livro' livro.pk %}" class="botao">Editar</a>
+                <a href="{% url 'remover_livro' livro.pk %}" onclick="return confirm('Tem certeza?')" class="botao-danger">Remover</a>
+                <button onclick="fecharDetalhes({{ livro.id }})" class="botao-secundario">Fechar</button>
+            </div>
         </div>
     </div>
     {% endfor %}

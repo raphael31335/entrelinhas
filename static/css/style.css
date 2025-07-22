@@ -1,0 +1,254 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tipografia e plano de fundo geral */
+body {
+    background-image: url('/static/img/papel-antigo.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center center;
+    color: #3b2f1e;
+    font-family: 'Georgia', serif;
+}
+
+
+/* Cabeçalho */
+.header {
+    background-color: rgba(82, 66, 53, 0.95);
+    color: #f3e9dc;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #d2b48c;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo a {
+    color: #f3e9dc;
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+}
+
+.nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav a, .logout-form button {
+    color: #f3e9dc;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.nav a:hover,
+.logout-form button:hover {
+    text-decoration: underline;
+}
+
+/* Conteúdo principal */
+.main-content {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: rgba(255, 255, 240, 0.96);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border: 1px solid #e2d5b7;
+}
+
+/* Títulos */
+.titulo-pagina {
+    font-family: 'Garamond', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #5a3e2b;
+}
+
+/* Mensagens */
+.mensagem {
+    font-style: italic;
+    color: #6e4b3c;
+    margin-bottom: 1rem;
+}
+
+/* Formulários */
+.formulario {
+    background-color: #fffaf0;
+    padding: 2rem;
+    border: 1px solid #d4c3a3;
+    border-radius: 10px;
+}
+
+.formulario label {
+    font-weight: bold;
+    display: block;
+    margin-top: 1rem;
+    color: #4d392d;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.4rem;
+    border-radius: 5px;
+    border: 1px solid #cbb79c;
+    background-color: #fffdf5;
+}
+
+/* Botões */
+.botao, .botao-secundario, .botao-danger {
+    padding: 0.7rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    border: none;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.botao {
+    background-color: #a67c52;
+    color: white;
+}
+
+.botao:hover {
+    background-color: #8c6239;
+}
+
+.botao-secundario {
+    background-color: #ded2b7;
+    color: #333;
+}
+
+.botao-secundario:hover {
+    background-color: #c4b89c;
+}
+
+.botao-danger {
+    background-color: #c94c4c;
+    color: white;
+}
+
+.botao-danger:hover {
+    background-color: #a03a3a;
+}
+
+/* Estante - Grid */
+.estante-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.livro-card {
+    background-color: #fdf7ec;
+    border: 1px solid #d4bfa6;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.livro-card:hover {
+    transform: translateY(-3px);
+}
+
+.livro-card img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* Detalhes do livro */
+.livro-detalhes {
+    margin-top: 1rem;
+    text-align: left;
+    color: #5a3e2b;
+}
+
+/* Lista de livros da busca */
+.lista-livros {
+    list-style: none;
+    margin-top: 2rem;
+    padding: 0;
+}
+
+.item-livro {
+    display: flex;
+    gap: 1rem;
+    background-color: #fffdf5;
+    border: 1px solid #d9c8aa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.item-livro img {
+    height: 100px;
+    object-fit: contain;
+}
+
+/* Barra de busca */
+.form-busca {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-busca input[type="text"] {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #d6c3a3;
+    border-radius: 5px;
+}
+
+/* Grupo de botões */
+.botoes-acoes {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .main-content {
+        padding: 1.2rem;
+    }
+
+    .formulario {
+        padding: 1rem;
+    }
+
+    .livro-card {
+        padding: 0.8rem;
+    }
+}

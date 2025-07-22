@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head><title>Editar Livro</title></head>
-<body>
-    <h2>Editar Livro</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar alterações</button>
-    </form>
-    <p><a href="{% url 'minha_estante' %}">Voltar à estante</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Editar Livro{% endblock %}
+
+{% block content %}
+<h2 class="titulo-pagina">Editar Livro</h2>
+
+<form method="post" class="formulario">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="botao">Salvar Alterações</button>
+</form>
+
+<a href="{% url 'minha_estante' %}" class="botao-secundario">Cancelar</a>
+{% endblock %}

@@ -13,7 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # Necessário para arquivos estáticos
     'core',
     'livros',
 ]
@@ -33,7 +33,7 @@ ROOT_URLCONF = 'entrelinhas.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Diretório de templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,8 +62,15 @@ TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
+# Configurações para arquivos estáticos
 STATIC_URL = '/static/'
 
+# Diretório onde o Django deve procurar arquivos estáticos personalizados
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Redirecionamento após login/logout
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'minha_estante'
 LOGOUT_REDIRECT_URL = 'login'
