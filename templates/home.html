@@ -3,8 +3,12 @@
 
 {% block content %}
 <div class="home-container">
-    <h2 class="titulo-pagina">Bem-vindo ao <span class="destaque">Entrelinhas</span></h2>
-    <p class="mensagem">Gerencie seus livros, descubra novas leituras e acompanhe seu progresso de forma única e personalizada.</p>
+    <h2 class="titulo-pagina">
+        Bem-vindo ao <span class="destaque">Entrelinhas</span>
+    </h2>
+    <p class="mensagem">
+        Gerencie seus livros, descubra novas leituras e acompanhe seu progresso de forma única e personalizada.
+    </p>
 
     <div class="acoes-iniciais">
         {% if user.is_authenticated %}

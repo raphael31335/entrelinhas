@@ -14,7 +14,7 @@
         {% for livro in livros %}
         <li class="item-livro">
             <img src="{{ livro.capa }}" alt="Capa de {{ livro.titulo }}">
-            <div>
+            <div class="info-livro">
                 <strong>{{ livro.titulo }}</strong><br>
                 <em>{{ livro.autores }}</em><br>
                 <form method="post" action="{% url 'salvar_livro_api' %}">
