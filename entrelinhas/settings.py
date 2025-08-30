@@ -10,9 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Corrigindo ALLOWED_HOSTS para Render
-allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'localhost,entrelinhas-dtm8.onrender.com')
-ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',')]
+# ALLOWED_HOSTS seguro para Render
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'entrelinhas-dtm8.onrender.com',
+    '.onrender.com',  # aceita subdomínios do Render
+]
 
 # -------------------------------
 # Aplicações instaladas
@@ -23,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',  # Necessário para arquivos estáticos
+    'django.contrib.staticfiles',  # necessário para arquivos estáticos
     'core',
     'livros',
 ]
