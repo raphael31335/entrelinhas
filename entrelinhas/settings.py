@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
+import dj_database_url  # precisamos instalar no requirements.txt
 
-# Caminho base do projeto
+# Caminho base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # -------------------------------
@@ -10,12 +11,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ALLOWED_HOSTS seguro para Render
+# Render precisa disso
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'entrelinhas-dtm8.onrender.com',
-    '.onrender.com',  # aceita subdomínios do Render
+    '.onrender.com',
 ]
 
 # -------------------------------
@@ -27,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',  # necessário para arquivos estáticos
+    'django.contrib.staticfiles',
     'core',
     'livros',
 ]
@@ -71,15 +72,24 @@ WSGI_APPLICATION = 'entrelinhas.wsgi.application'
 # -------------------------------
 # Banco de dados
 # -------------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get("DATABASE_URL"):  # Render ou produção
+    DATABASES = {
+        "default": dj_database_url.parse(
+            os.environ["DATABASE_URL"],
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
-}
+else:  # Local (SQLite)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # -------------------------------
-# Validação de senhas (desabilitada para teste)
+# Validação de senhas (simples por enquanto)
 # -------------------------------
 AUTH_PASSWORD_VALIDATORS = []
 
@@ -95,13 +105,7 @@ USE_TZ = True
 # Arquivos estáticos
 # -------------------------------
 STATIC_URL = '/static/'
-
-# Diretórios de arquivos estáticos locais
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# Diretório onde os arquivos estáticos serão coletados no servidor
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # -------------------------------
