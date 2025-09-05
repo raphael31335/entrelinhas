@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-import dj_database_url  # precisamos instalar no requirements.txt
+import dj_database_url  # lembre-se de instalar no requirements.txt
 
 # Caminho base
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Render precisa disso
+# Hosts permitidos (inclui Render)
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -89,7 +89,7 @@ else:  # Local (SQLite)
     }
 
 # -------------------------------
-# Validação de senhas (simples por enquanto)
+# Validação de senhas
 # -------------------------------
 AUTH_PASSWORD_VALIDATORS = []
 
