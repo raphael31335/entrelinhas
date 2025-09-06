@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-import dj_database_url  # lembre-se de instalar no requirements.txt
+import dj_database_url
 
 # Caminho base
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Hosts permitidos (inclui Render)
+# Hosts permitidos
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 # -------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # importante no Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -107,6 +108,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Whitenoise para produção
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # -------------------------------
 # Redirecionamentos de login
