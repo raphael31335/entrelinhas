@@ -1,1 +1,1 @@
-web: gunicorn entrelinhas.wsgi
+web: gunicorn entrelinhas.wsgi:application
