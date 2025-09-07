@@ -78,7 +78,7 @@ if os.environ.get("DATABASE_URL"):  # Render ou produção
         "default": dj_database_url.parse(
             os.environ["DATABASE_URL"],
             conn_max_age=600,
-            ssl_require=True
+                     ssl_require=os.environ.get("RENDER") is not None
         )
     }
 else:  # Local (SQLite)
