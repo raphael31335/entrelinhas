@@ -29,7 +29,7 @@ def salvar_livro_api(request):
         google_id = request.POST.get('google_id')
         capa = request.POST.get('capa')
 
-        if not Livro.objects.filter(user=request.user, titulo=titulo).exists():
+        if not Livro.objects.filter(user=request.user, google_id=google_id).exists():
             livro = Livro(
                 user=request.user,
                 titulo=titulo,
