@@ -6,20 +6,23 @@
 <a href="{% url 'sugestoes_para_mim' %}" class="botao-secundario">Sugestões para Mim</a>
 
 <div class="estante-grid">
-    {% for livro in livros %}
+    {% for relacao in relacoes_livros %}
     <div class="livro-card">
-        <img src="{{ livro.capa }}" alt="{{ livro.titulo }}" onclick="mostrarDetalhes({{ livro.id }})">
-        <div id="detalhes-{{ livro.id }}" class="livro-detalhes oculto">
-            <h3>{{ livro.titulo }}</h3>
-            <p><strong>Autor(es):</strong> {{ livro.autores }}</p>
-            <p><strong>Status:</strong> {{ livro.status }}</p>
-            <p><strong>Nota:</strong> {{ livro.nota }} / 5</p>
-            <p><strong>Comentário:</strong> {{ livro.comentario }}</p>
-            <p><strong>Data de Leitura:</strong> {{ livro.data_leitura|default:"-" }}</p>
+        <img src="{{ relacao.livro.capa }}" alt="{{ relacao.livro.titulo }}" onclick="mostrarDetalhes({{ relacao.id }})">
+        
+        <div id="detalhes-{{ relacao.id }}" class="livro-detalhes oculto">
+            <h3>{{ relacao.livro.titulo }}</h3>
+            <p><strong>Autor(es):</strong> {{ relacao.livro.autores }}</p>
+            
+            <p><strong>Status:</strong> {{ relacao.status }}</p>
+            <p><strong>Nota:</strong> {{ relacao.nota|default:"-" }} / 5</p>
+            <p><strong>Comentário:</strong> {{ relacao.comentario|default:"-" }}</p>
+            <p><strong>Data de Leitura:</strong> {{ relacao.data_leitura|default:"-" }}</p>
+            
             <div class="botoes-acoes">
-                <a href="{% url 'editar_livro' livro.pk %}" class="botao">Editar</a>
-                <a href="{% url 'remover_livro' livro.pk %}" onclick="return confirm('Tem certeza?')" class="botao-danger">Remover</a>
-                <button onclick="fecharDetalhes({{ livro.id }})" class="botao-secundario">Fechar</button>
+                <a href="{% url 'editar_livro' relacao.id %}" class="botao">Editar</a>
+                <a href="{% url 'remover_livro' relacao.id %}" onclick="return confirm('Tem certeza?')" class="botao-danger">Remover</a>
+                <button onclick="fecharDetalhes({{ relacao.id }})" class="botao-secundario">Fechar</button>
             </div>
         </div>
     </div>
