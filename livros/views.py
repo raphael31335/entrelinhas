@@ -31,31 +31,31 @@ def salvar_livro_api(request):
         google_id = request.POST.get('google_id')
         capa = request.POST.get('capa')
 
-        # 1. Tenta encontrar o livro pelo google_id.
-        #    Se não existir, ele cria um novo com os dados fornecidos.
-        livro, criado = Livro.objects.get_or_create(
-            google_id=google_id,
-            defaults={
-                'titulo': titulo,
-                'autores': autores,
-                'capa': capa
-            }
-        )
+        # Corrigido: Passamos o 'user=request.user' para o get_or_create.
+        # Agora o Django saberá a quem associar o livro caso precise criar um novo.
+        try:
+            livro, criado = Livro.objects.get_or_create(
+                user=request.user,
+                google_id=google_id,
+                defaults={
+                    'titulo': titulo,
+                    'autores': autores,
+                    'capa': capa
+                }
+            )
 
-        # 2. Verifica se o livro já está associado ao usuário atual.
-        #    Se não estiver, o associa.
-        if Livro.objects.filter(user=request.user, google_id=google_id).exists():
-            messages.warning(request, f'O livro "{livro.titulo}" já está na sua estante.')
-        else:
-            livro.user = request.user
-            livro.save()
             if criado:
-                messages.success(request, f'O livro "{livro.titulo}" foi salvo na base de dados e adicionado à sua estante!')
+                messages.success(request, f'O livro "{livro.titulo}" foi adicionado à sua estante!')
             else:
-                messages.success(request, f'O livro "{livro.titulo}" já existe. Adicionado à sua estante.')
+                messages.warning(request, f'O livro "{livro.titulo}" já está na sua estante.')
         
+        except Exception as e:
+            # Uma boa prática é adicionar um bloco try-except para
+            # lidar com possíveis erros inesperados.
+            messages.error(request, f'Ocorreu um erro ao salvar o livro: {e}')
+
         return redirect('minha_estante')
-    
+
     return redirect('minha_estante')
 
 
