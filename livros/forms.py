@@ -1,9 +1,9 @@
 from django import forms
-from .models import Livro
+from .models import LivroUsuario
 
 class LivroForm(forms.ModelForm):
     class Meta:
-        model = Livro
+        model = LivroUsuario
         fields = ['status', 'nota', 'comentario', 'data_leitura']
         widgets = {
             'data_leitura': forms.DateInput(attrs={'type': 'date'}),
