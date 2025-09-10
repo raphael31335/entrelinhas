@@ -1,17 +1,18 @@
-# No arquivo: livros/views.py
+# livros/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Livro
+from .models import Livro, LivroUsuario
 from .forms import LivroForm
 from .utils import buscar_livros_api, gerar_sugestoes
 
 
 @login_required
 def minha_estante(request):
-    livros = Livro.objects.filter(user=request.user)
-    return render(request, 'livros/minha_estante.html', {'livros': livros})
+    # Agora filtra por LivroUsuario, não Livro
+    relacoes_livros = LivroUsuario.objects.filter(user=request.user)
+    return render(request, 'livros/minha_estante.html', {'relacoes_livros': relacoes_livros})
 
 
 @login_required
@@ -31,11 +32,9 @@ def salvar_livro_api(request):
         google_id = request.POST.get('google_id')
         capa = request.POST.get('capa')
 
-        # Corrigido: Passamos o 'user=request.user' para o get_or_create.
-        # Agora o Django saberá a quem associar o livro caso precise criar um novo.
         try:
-            livro, criado = Livro.objects.get_or_create(
-                user=request.user,
+            # Passo 1: Encontra ou cria o livro genérico
+            livro_generico, livro_criado = Livro.objects.get_or_create(
                 google_id=google_id,
                 defaults={
                     'titulo': titulo,
@@ -44,14 +43,18 @@ def salvar_livro_api(request):
                 }
             )
 
-            if criado:
-                messages.success(request, f'O livro "{livro.titulo}" foi adicionado à sua estante!')
+            # Passo 2: Encontra ou cria a relação entre o usuário e o livro
+            relacao, relacao_criada = LivroUsuario.objects.get_or_create(
+                user=request.user,
+                livro=livro_generico
+            )
+
+            if relacao_criada:
+                messages.success(request, f'O livro "{livro_generico.titulo}" foi adicionado à sua estante!')
             else:
-                messages.warning(request, f'O livro "{livro.titulo}" já está na sua estante.')
+                messages.warning(request, f'O livro "{livro_generico.titulo}" já está na sua estante.')
         
         except Exception as e:
-            # Uma boa prática é adicionar um bloco try-except para
-            # lidar com possíveis erros inesperados.
             messages.error(request, f'Ocorreu um erro ao salvar o livro: {e}')
 
         return redirect('minha_estante')
@@ -64,9 +67,10 @@ def cadastro_manual(request):
     if request.method == 'POST':
         form = LivroForm(request.POST)
         if form.is_valid():
-            livro = form.save(commit=False)
-            livro.user = request.user
-            livro.save()
+            # A lógica aqui agora cria um Livro genérico primeiro
+            novo_livro = form.save()
+            # E depois cria a relação com o usuário
+            LivroUsuario.objects.create(user=request.user, livro=novo_livro)
             messages.success(request, 'Livro cadastrado manualmente!')
             return redirect('minha_estante')
     else:
@@ -75,23 +79,31 @@ def cadastro_manual(request):
 
 
 @login_required
-def editar_livro(request, livro_id):
-    livro = get_object_or_404(Livro, id=livro_id, user=request.user)
+def editar_livro(request, livro_usuario_id):
+    # Encontra a relação LivroUsuario para o usuário logado
+    relacao = get_object_or_404(LivroUsuario, id=livro_usuario_id, user=request.user)
+    
+    # O formulário agora lida com os campos do LivroUsuario
+    # Você precisará criar um LivroUsuarioForm ou usar um modelo de formulário simples
     if request.method == 'POST':
-        form = LivroForm(request.POST, instance=livro)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Livro atualizado com sucesso!')
-            return redirect('minha_estante')
+        # Exemplo de como salvar os campos do LivroUsuario
+        relacao.status = request.POST.get('status')
+        relacao.nota = request.POST.get('nota')
+        relacao.comentario = request.POST.get('comentario')
+        relacao.data_leitura = request.POST.get('data_leitura')
+        relacao.save()
+        
+        messages.success(request, 'Livro atualizado com sucesso!')
+        return redirect('minha_estante')
     else:
-        form = LivroForm(instance=livro)
-    return render(request, 'livros/editar.html', {'form': form})
+        return render(request, 'livros/editar.html', {'relacao': relacao})
 
 
 @login_required
-def remover_livro(request, livro_id):
-    livro = get_object_or_404(Livro, id=livro_id, user=request.user)
-    livro.delete()
+def remover_livro(request, livro_usuario_id):
+    # Encontra e deleta a relação LivroUsuario, não o livro genérico
+    relacao = get_object_or_404(LivroUsuario, id=livro_usuario_id, user=request.user)
+    relacao.delete()
     messages.success(request, 'Livro removido da sua estante.')
     return redirect('minha_estante')
 
