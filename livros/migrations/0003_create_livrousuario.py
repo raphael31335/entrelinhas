@@ -1,13 +1,15 @@
-# Generated manually: cria o modelo LivroUsuario com unique_together (user, livro)
+# livros/migrations/0003_create_livrousuario.py
 from django.db import migrations, models
 import django.db.models.deletion
+from django.conf import settings
 
 class Migration(migrations.Migration):
 
-    initial = False
+    # MARCA COMO INITIAL para que --fake-initial funcione
+    initial = True
 
     dependencies = [
-        ('livros', '0002_remove_livrousuario_unique_user_livro_and_more'),  # ajuste se necessário
+        ('livros', '0001_initial'),
     ]
 
     operations = [
@@ -20,8 +22,12 @@ class Migration(migrations.Migration):
                 ('comentario', models.TextField(blank=True)),
                 ('data_leitura', models.DateField(blank=True, null=True)),
                 ('livro', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='livros.livro')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.user')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+                'verbose_name': 'Livro do Usuário',
+                'verbose_name_plural': 'Livros dos Usuários',
+            },
         ),
         migrations.AlterUniqueTogether(
             name='livrousuario',
