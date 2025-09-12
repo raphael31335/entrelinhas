@@ -1,9 +1,9 @@
+# livros/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Livro(models.Model):
-    # um registro por livro (google_id único)
     google_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     titulo = models.CharField(max_length=200)
     autores = models.CharField(max_length=200, blank=True)
@@ -11,7 +11,6 @@ class Livro(models.Model):
 
     def __str__(self):
         return self.titulo
-
 
 class LivroUsuario(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -31,8 +30,6 @@ class LivroUsuario(models.Model):
 
     class Meta:
         unique_together = ('user', 'livro')
-        verbose_name = "Livro do Usuário"
-        verbose_name_plural = "Livros dos Usuários"
 
     def __str__(self):
         return f'{self.livro.titulo} de {self.user.username}'

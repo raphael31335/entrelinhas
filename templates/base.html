@@ -2,10 +2,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Entrelinhas{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- Meta CSRF para JS (útil se fizer fetch/ajax) -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
     <header class="header">
@@ -33,6 +38,18 @@
 
     <main class="main-content">
         {% block content %}{% endblock %}
+
+        {# Mensagens do Django (alertas) #}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </main>
+
+    <!-- Scripts JS -->
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
