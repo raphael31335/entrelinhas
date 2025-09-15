@@ -2,26 +2,19 @@ import os
 from pathlib import Path
 import dj_database_url
 
-# Caminho base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# -------------------------------
-# Variáveis sensíveis e ambiente
-# -------------------------------
+# Segurança / ambiente
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'   # em produção deixar False
 
-# Hosts permitidos
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'entrelinhas-dtm8.onrender.com',
-    '.onrender.com',
-]
+# Hosts permitidos (inclui subdomínios onrender)
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS',
+    'localhost,127.0.0.1,entrelinhas-dtm8.onrender.com'
+).split(',')
 
-# -------------------------------
-# Aplicações instaladas
-# -------------------------------
+# Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,12 +26,9 @@ INSTALLED_APPS = [
     'livros',
 ]
 
-# -------------------------------
-# Middlewares
-# -------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # importante no Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve static files em prod
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,9 +37,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# -------------------------------
-# URLs e templates
-# -------------------------------
 ROOT_URLCONF = 'entrelinhas.urls'
 
 TEMPLATES = [
@@ -70,18 +57,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'entrelinhas.wsgi.application'
 
-# -------------------------------
-# Banco de dados
-# -------------------------------
-if os.environ.get("DATABASE_URL"):  # Render ou produção
+# Banco de dados: usa DATABASE_URL se existir (Render), senão sqlite local
+if os.environ.get("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.parse(
             os.environ["DATABASE_URL"],
             conn_max_age=600,
-                     ssl_require=os.environ.get("RENDER") is not None
+            ssl_require=True
         )
     }
-else:  # Local (SQLite)
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -89,37 +74,22 @@ else:  # Local (SQLite)
         }
     }
 
-# -------------------------------
-# Validação de senhas
-# -------------------------------
 AUTH_PASSWORD_VALIDATORS = []
 
-# -------------------------------
-# Internacionalização
-# -------------------------------
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
-# -------------------------------
-# Arquivos estáticos
-# -------------------------------
+# Static
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Whitenoise para produção
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# -------------------------------
-# Redirecionamentos de login
-# -------------------------------
+# Login redirects
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'minha_estante'
 LOGOUT_REDIRECT_URL = 'login'
 
-# -------------------------------
-# Campo automático padrão
-# -------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

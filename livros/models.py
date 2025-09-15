@@ -1,4 +1,3 @@
-# livros/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -32,4 +31,4 @@ class LivroUsuario(models.Model):
         unique_together = ('user', 'livro')
 
     def __str__(self):
-        return f'{self.livro.titulo} de {self.user.username}'
+        return f'{self.livro.titulo} - {self.user.username}'

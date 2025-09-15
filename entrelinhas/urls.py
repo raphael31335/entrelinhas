@@ -1,16 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-
-# Importações necessárias para arquivos estáticos no modo DEBUG
-from django.conf import settings
-from django.conf.urls.static import static
+from core import views as core_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),           # URLs da parte principal do site
-    path('livros/', include('livros.urls')),  # URLs do app livros
+    path('', include('core.urls')),          # home, register
+    path('livros/', include('livros.urls')), # app livros
+    path('', include('django.contrib.auth.urls')),  # login/logout (names: login, logout, password_* )
 ]
-
-# Somente adiciona os arquivos estáticos se estiver no modo DEBUG
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
