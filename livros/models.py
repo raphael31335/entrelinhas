@@ -28,7 +28,9 @@ class LivroUsuario(models.Model):
     data_leitura = models.DateField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'livro')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'livro'], name='unique_user_livro')
+        ]
 
     def __str__(self):
-        return f'{self.livro.titulo} - {self.user.username}'
+        return f'{self.livro.titulo} de {self.user.username}'

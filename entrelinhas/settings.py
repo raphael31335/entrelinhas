@@ -4,17 +4,21 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Segurança / ambiente
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sua-chave-secreta-teste')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'   # em produção deixar False
+# -------------------------------
+# Variáveis sensíveis e ambiente
+# -------------------------------
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'troque-isto-ao-produzir')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Hosts permitidos (inclui subdomínios onrender)
+# Hosts permitidos (inclui onrender)
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
     'localhost,127.0.0.1,entrelinhas-dtm8.onrender.com'
 ).split(',')
 
+# -------------------------------
 # Apps
+# -------------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,9 +30,12 @@ INSTALLED_APPS = [
     'livros',
 ]
 
+# -------------------------------
+# Middlewares
+# -------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve static files em prod
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve static em produção
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,37 +64,48 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'entrelinhas.wsgi.application'
 
-# Banco de dados: usa DATABASE_URL se existir (Render), senão sqlite local
-if os.environ.get("DATABASE_URL"):
+# -------------------------------
+# Banco de dados (usa DATABASE_URL em produção)
+# -------------------------------
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
     DATABASES = {
-        "default": dj_database_url.parse(
-            os.environ["DATABASE_URL"],
-            conn_max_age=600,
-            ssl_require=True
-        )
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
 else:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
+# -------------------------------
+# Senhas / validação
+# -------------------------------
 AUTH_PASSWORD_VALIDATORS = []
 
+# -------------------------------
+# Internacionalização
+# -------------------------------
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
-# Static
+# -------------------------------
+# Static files / Whitenoise
+# -------------------------------
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Em produção com whitenoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# -------------------------------
 # Login redirects
+# -------------------------------
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'minha_estante'
 LOGOUT_REDIRECT_URL = 'login'
