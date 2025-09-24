@@ -1,8 +1,8 @@
-# livros/forms.py
 from django import forms
-from .models import Livro
+from .models import LivroUsuario
 
-class LivroForm(forms.ModelForm):
+
+class LivroUsuarioForm(forms.ModelForm):
     class Meta:
-        model = Livro
-        fields = ['google_id', 'titulo', 'autores', 'capa']
+        model = LivroUsuario
+        fields = ['status', 'nota', 'resenha', 'data_leitura']

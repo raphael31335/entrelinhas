@@ -1,36 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class Livro(models.Model):
-    google_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    titulo = models.CharField(max_length=200)
-    autores = models.CharField(max_length=200, blank=True)
-    capa = models.URLField(blank=True)
+    google_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    titulo = models.CharField(max_length=255)
+    autores = models.CharField(max_length=255, null=True, blank=True)
+    descricao = models.TextField(null=True, blank=True)
+    capa_url = models.URLField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return self.titulo
 
+
 class LivroUsuario(models.Model):
+    STATUS_CHOICES = [
+        ('lendo', 'Lendo'),
+        ('lido', 'Lido'),
+        ('quero_ler', 'Quero Ler'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     livro = models.ForeignKey(Livro, on_delete=models.CASCADE)
-    status = models.CharField(
-        max_length=20,
-        choices=[('Lido', 'Lido'), ('Lendo', 'Lendo'), ('Desejo ler', 'Desejo ler')],
-        blank=True
-    )
-    nota = models.IntegerField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
-    comentario = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='quero_ler')
+    nota = models.IntegerField(null=True, blank=True)
+    resenha = models.TextField(null=True, blank=True)
     data_leitura = models.DateField(null=True, blank=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'livro'], name='unique_user_livro')
-        ]
+        unique_together = ('user', 'livro')
 
     def __str__(self):
-        return f'{self.livro.titulo} de {self.user.username}'
+        return f"{self.user.username} - {self.livro.titulo}"
